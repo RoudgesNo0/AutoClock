@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoClock - Global Time Synchronizer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #000000;
+            color: #ffffff;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px 0;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #ffffff, #cccccc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: #cccccc;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+        }
+
+        .card {
+            background: #111111;
+            border: 1px solid #333333;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(255, 255, 255, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 48px rgba(255, 255, 255, 0.1);
+        }
+
+        .card h2 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #ffffff;
+            border-bottom: 2px solid #333333;
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            background: #222222;
+            border: 1px solid #444444;
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 16px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #666666;
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+        }
+
+        .btn {
+            background: #ffffff;
+            color: #000000;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background: #eeeeee;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 255, 255, 0.2);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .code-display {
+            background: #222222;
+            border: 1px solid #444444;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 20px 0;
+            text-align: center;
+            position: relative;
+        }
+
+        .code-text {
+            font-family: 'Courier New', monospace;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ffffff;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        .copy-btn {
+            background: #333333;
+            color: #ffffff;
+            border: 1px solid #555555;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background: #444444;
+        }
+
+        .result-display {
+            background: #0f1f0f;
+            border: 1px solid #2a4a2a;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .time-result {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+
+        .timezone-info {
+            color: #cccccc;
+            font-size: 1.1rem;
+        }
+
+        .error {
+            background: #2a0f0f;
+            border: 1px solid #4a2a2a;
+            color: #ff6666;
+            padding: 12px;
+            border-radius: 6px;
+            margin: 10px 0;
+        }
+
+        .success {
+            background: #0f2a0f;
+            border: 1px solid #2a4a2a;
+            color: #66ff66;
+            padding: 12px;
+            border-radius: 6px;
+            margin: 10px 0;
+        }
+
+        .current-time {
+            text-align: center;
+            margin: 40px 0;
+            padding: 30px;
+            background: #111111;
+            border-radius: 16px;
+            border: 1px solid #333333;
+        }
+
+        .current-time h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #ffffff;
+        }
+
+        .live-time {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #ffffff;
+            font-family: 'Courier New', monospace;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #333333;
+            color: #888888;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>AutoClock</h1>
+            <p>Synchronize meetings across timezones with shareable time codes. Create a time, get a code, share it globally.</p>
+        </div>
+
+        <div class="current-time">
+            <h3>Your Current Time</h3>
+            <div class="live-time" id="currentTime"></div>
+            <div class="timezone-info" id="currentTimezone"></div>
+        </div>
+
+        <div class="main-content">
+            <div class="card">
+                <h2>🕐 Create Time Code</h2>
+                <div class="form-group">
+                    <label for="meetingDate">Meeting Date:</label>
+                    <input type="date" id="meetingDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="meetingTime">Meeting Time:</label>
+                    <input type="time" id="meetingTime" required>
+                </div>
+                <div class="form-group">
+                    <label for="timezone">Your Timezone:</label>
+                    <select id="timezone" required>
+                        <option value="">Detecting timezone...</option>
+                    </select>
+                </div>
+                <button class="btn" onclick="generateCode()">Generate Time Code</button>
+                
+                <div id="generatedCode" class="code-display" style="display: none;">
+                    <div class="code-text" id="codeText"></div>
+                    <button class="copy-btn" onclick="copyCode()">Copy Code</button>
+                </div>
+                
+                <div id="codeMessage"></div>
+            </div>
+
+            <div class="card">
+                <h2>🔍 Decode Time Code</h2>
+                <div class="form-group">
+                    <label for="inputCode">Enter Time Code:</label>
+                    <input type="text" id="inputCode" placeholder="Paste the time code here..." required>
+                </div>
+                <button class="btn" onclick="decodeCode()">Decode & Convert</button>
+                
+                <div id="decodedResult" style="display: none;">
+                    <div class="result-display">
+                        <div class="time-result" id="convertedTime"></div>
+                        <div class="timezone-info" id="convertedTimezone"></div>
+                        <div style="margin-top: 15px; color: #cccccc;">
+                            <small>Original time: <span id="originalTime"></span></small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="decodeMessage"></div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>&copy; 2025 AutoClock by Roudges - Making global meetings simple</p>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeTimezones();
+            updateCurrentTime();
+            setDefaultDateTime();
+            checkUrlParameters();
+            
+            // Update current time every second
+            setInterval(updateCurrentTime, 1000);
+        });
+
+        function checkUrlParameters() {
+            // Check if there's a code in the URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const code = urlParams.get('c');
+            
+            if (code) {
+                // Automatically fill in the code and decode it
+                document.getElementById('inputCode').value = code;
+                decodeCode();
+                
+                // Scroll to the decode section
+                document.getElementById('inputCode').scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center' 
+                });
+            }
+        }
+
+        function initializeTimezones() {
+            const timezoneSelect = document.getElementById('timezone');
+            
+            // Common timezones
+            const commonTimezones = [
+                'Europe/Berlin',
+                'Europe/London',
+                'America/New_York',
+                'America/Los_Angeles',
+                'America/Chicago',
+                'Asia/Tokyo',
+                'Asia/Shanghai',
+                'Australia/Sydney',
+                'Europe/Paris',
+                'Europe/Rome',
+                'Asia/Dubai',
+                'Asia/Kolkata',
+                'Pacific/Auckland',
+                'America/Toronto',
+                'America/Mexico_City'
+            ];
+
+            // Clear loading option
+            timezoneSelect.innerHTML = '';
+
+            // Add user's current timezone first
+            const userOption = document.createElement('option');
+            userOption.value = userTimezone;
+            userOption.textContent = `${userTimezone} (Your timezone)`;
+            userOption.selected = true;
+            timezoneSelect.appendChild(userOption);
+
+            // Add other common timezones
+            commonTimezones.forEach(tz => {
+                if (tz !== userTimezone) {
+                    const option = document.createElement('option');
+                    option.value = tz;
+                    option.textContent = tz;
+                    timezoneSelect.appendChild(option);
+                }
+            });
+        }
+
+        function updateCurrentTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('en-US', {
+                hour12: false,
+                timeZone: userTimezone
+            });
+            
+            document.getElementById('currentTime').textContent = timeString;
+            document.getElementById('currentTimezone').textContent = userTimezone;
+        }
+
+        function setDefaultDateTime() {
+            const now = new Date();
+            const today = now.toISOString().split('T')[0];
+            const currentTime = now.toTimeString().slice(0, 5);
+            
+            document.getElementById('meetingDate').value = today;
+            document.getElementById('meetingTime').value = currentTime;
+        }
+
+        function generateCode() {
+            const date = document.getElementById('meetingDate').value;
+            const time = document.getElementById('meetingTime').value;
+            const timezone = document.getElementById('timezone').value;
+            const messageDiv = document.getElementById('codeMessage');
+
+            // Clear previous messages
+            messageDiv.innerHTML = '';
+
+            if (!date || !time || !timezone) {
+                messageDiv.innerHTML = '<div class="error">Please fill in all fields.</div>';
+                return;
+            }
+
+            try {
+                // Create the datetime string and interpret it in the specified timezone
+                const dateTimeString = `${date}T${time}:00`;
+                
+                // Use Intl.DateTimeFormat to properly handle timezone conversion
+                const localDate = new Date(dateTimeString);
+                
+                // Convert to UTC by finding the difference between local and target timezone
+                const localTimeInTarget = localDate.toLocaleString('sv-SE', {timeZone: timezone});
+                const localTimeInLocal = localDate.toLocaleString('sv-SE');
+                
+                // Calculate the difference and adjust
+                const targetTime = new Date(localTimeInTarget);
+                const localTime = new Date(localTimeInLocal);
+                const offsetDiff = localTime.getTime() - targetTime.getTime();
+                
+                // Get the actual UTC timestamp for this time in the specified timezone
+                const utcTimestamp = localDate.getTime() + offsetDiff;
+                
+                // Create a compact code using a more efficient encoding
+                const code = generateCompactCode(utcTimestamp, timezone);
+                
+                // Create shareable URL
+                const shareUrl = `${window.location.origin}${window.location.pathname}?c=${code}`;
+                
+                // Display the code and URL
+                document.getElementById('codeText').textContent = code;
+                document.getElementById('generatedCode').style.display = 'block';
+                
+                // Add the shareable URL display
+                const existingUrl = document.getElementById('shareUrl');
+                if (existingUrl) {
+                    existingUrl.remove();
+                }
+                
+                const urlDiv = document.createElement('div');
+                urlDiv.id = 'shareUrl';
+                urlDiv.style.marginTop = '15px';
+                urlDiv.style.padding = '12px';
+                urlDiv.style.background = '#1a1a1a';
+                urlDiv.style.borderRadius = '6px';
+                urlDiv.style.border = '1px solid #444';
+                urlDiv.innerHTML = `
+                    <div style="color: #ccc; font-size: 14px; margin-bottom: 8px;">Shareable Link:</div>
+                    <div style="font-family: monospace; color: #fff; word-break: break-all; margin-bottom: 8px;">${shareUrl}</div>
+                    <button class="copy-btn" onclick="copyUrl('${shareUrl}')">Copy Link</button>
+                `;
+                
+                document.getElementById('generatedCode').appendChild(urlDiv);
+                
+                messageDiv.innerHTML = '<div class="success">Time code generated successfully! Share the code or link with others.</div>';
+                
+            } catch (error) {
+                messageDiv.innerHTML = '<div class="error">Error generating code. Please try again.</div>';
+                console.error('Code generation error:', error);
+            }
+        }
+
+        function generateCompactCode(timestamp, timezone) {
+            // Common timezones with short indices
+            const timezoneMap = {
+                'Europe/Berlin': 0, 'Europe/London': 1, 'America/New_York': 2,
+                'America/Los_Angeles': 3, 'America/Chicago': 4, 'Asia/Tokyo': 5,
+                'Asia/Shanghai': 6, 'Australia/Sydney': 7, 'Europe/Paris': 8,
+                'Europe/Rome': 9, 'Asia/Dubai': 10, 'Asia/Kolkata': 11,
+                'Pacific/Auckland': 12, 'America/Toronto': 13, 'America/Mexico_City': 14
+            };
+            
+            // Get timezone index (or use 99 for unknown timezones)
+            const tzIndex = timezoneMap[timezone] !== undefined ? timezoneMap[timezone] : 99;
+            
+            // Convert timestamp to minutes since Unix epoch to save space
+            const minutesSinceEpoch = Math.floor(timestamp / 60000);
+            
+            // Create a compact representation: timestamp + timezone index
+            // Use base36 for shorter codes (0-9, a-z)
+            const timestampPart = minutesSinceEpoch.toString(36);
+            const timezonePart = tzIndex.toString(36).padStart(2, '0');
+            
+            // Combine and create final short code (8-10 characters)
+            const combined = timestampPart + timezonePart;
+            
+            // Store the full timezone name for unknown timezones
+            if (tzIndex === 99) {
+                localStorage.setItem(`tz_${combined}`, timezone);
+            }
+            
+            return combined.toUpperCase();
+        }
+
+        function copyUrl(url) {
+            navigator.clipboard.writeText(url).then(() => {
+                const button = event.target;
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                setTimeout(() => {
+                    button.textContent = originalText;
+                }, 2000);
+            });
+        }
+
+        function copyCode() {
+            const codeText = document.getElementById('codeText').textContent;
+            navigator.clipboard.writeText(codeText).then(() => {
+                const button = event.target;
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                setTimeout(() => {
+                    button.textContent = originalText;
+                }, 2000);
+            });
+        }
+
+        function decodeCode() {
+            const inputCode = document.getElementById('inputCode').value.trim().toUpperCase();
+            const messageDiv = document.getElementById('decodeMessage');
+            const resultDiv = document.getElementById('decodedResult');
+
+            // Clear previous messages and results
+            messageDiv.innerHTML = '';
+            resultDiv.style.display = 'none';
+
+            if (!inputCode) {
+                messageDiv.innerHTML = '<div class="error">Please enter a time code.</div>';
+                return;
+            }
+
+            try {
+                let timestamp, timezone;
+
+                // Check if it's a new compact code or old base64 format
+                if (inputCode.length <= 12 && /^[0-9A-Z]+$/.test(inputCode)) {
+                    // New compact format
+                    const decoded = decodeCompactCode(inputCode);
+                    timestamp = decoded.timestamp;
+                    timezone = decoded.timezone;
+                } else {
+                    // Old base64 format (backwards compatibility)
+                    const decoded = atob(inputCode);
+                    const timeData = JSON.parse(decoded);
+                    timestamp = timeData.t || timeData.timestamp;
+                    timezone = timeData.z || timeData.timezone;
+                }
+
+                if (!timestamp || !timezone) {
+                    throw new Error('Invalid time data');
+                }
+
+                // Convert UTC timestamp to user's local timezone
+                const utcDate = new Date(timestamp);
+                const localTime = utcDate.toLocaleString('en-US', {
+                    timeZone: userTimezone,
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false
+                });
+
+                const originalTimeFormatted = utcDate.toLocaleString('en-US', {
+                    timeZone: timezone,
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false
+                });
+
+                // Display results
+                document.getElementById('convertedTime').textContent = localTime;
+                document.getElementById('convertedTimezone').textContent = `Your time (${userTimezone})`;
+                document.getElementById('originalTime').textContent = `${originalTimeFormatted} (${timezone})`;
+                
+                resultDiv.style.display = 'block';
+                messageDiv.innerHTML = '<div class="success">Time code decoded successfully!</div>';
+
+            } catch (error) {
+                messageDiv.innerHTML = '<div class="error">Invalid time code. Please check and try again.</div>';
+                console.error('Decode error:', error);
+            }
+        }
+
+        function decodeCompactCode(code) {
+            // Reverse timezone mapping
+            const timezoneList = [
+                'Europe/Berlin', 'Europe/London', 'America/New_York',
+                'America/Los_Angeles', 'America/Chicago', 'Asia/Tokyo',
+                'Asia/Shanghai', 'Australia/Sydney', 'Europe/Paris',
+                'Europe/Rome', 'Asia/Dubai', 'Asia/Kolkata',
+                'Pacific/Auckland', 'America/Toronto', 'America/Mexico_City'
+            ];
+
+            // Extract timezone part (last 2 characters)
+            const timezonePart = code.slice(-2);
+            const timestampPart = code.slice(0, -2);
+
+            // Convert from base36
+            const tzIndex = parseInt(timezonePart, 36);
+            const minutesSinceEpoch = parseInt(timestampPart, 36);
+
+            // Convert back to milliseconds
+            const timestamp = minutesSinceEpoch * 60000;
+
+            // Get timezone
+            let timezone;
+            if (tzIndex === 99) {
+                // Unknown timezone, try to get from localStorage
+                timezone = localStorage.getItem(`tz_${code}`) || 'UTC';
+            } else {
+                timezone = timezoneList[tzIndex] || 'UTC';
+            }
+
+            return { timestamp, timezone };
+        }
+
+        // Allow Enter key to trigger actions
+        document.getElementById('inputCode').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                decodeCode();
+            }
+        });
+
+        // Auto-generate code when form changes
+        ['meetingDate', 'meetingTime', 'timezone'].forEach(id => {
+            document.getElementById(id).addEventListener('change', function() {
+                const generatedCode = document.getElementById('generatedCode');
+                if (generatedCode.style.display !== 'none') {
+                    // Regenerate if code was previously generated
+                    setTimeout(generateCode, 100);
+                }
+            });
+        });
+    </script>
+</body>
+</html> 
