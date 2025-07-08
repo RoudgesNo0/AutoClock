@@ -7,7 +7,7 @@
 **Synchronize meetings across timezones with shareable time codes**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)]
 
 </div>
 
@@ -28,7 +28,7 @@ AutoClock is a modern web application that solves the global meeting coordinatio
 
 ## 🚀 Live Demo
 
-**[Try AutoClock Now](https://your-demo-link.com)**
+**[Try AutoClock Now](https://autoclock.roudges.de)**
 
 ## 📋 Table of Contents
 
@@ -247,13 +247,13 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - **Issues**: [GitHub Issues](https://github.com/RoudgesNo0/autoclock/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/RoudgesNo0/autoclock/discussions)
-- **Email**: your-email@example.com
+- **Email**: leon@roudges.de
 
 ---
 
 <div align="center">
 
-**Made with ❤️ by [Your Name/Team]**
+**Made with ❤️ by Leon Schmidt for GermanSocialNetwork, now freely available on GitHub**
 
 [![GitHub stars](https://img.shields.io/github/stars/RoudgesNo0/autoclock?style=social)](https://github.com/RoudgesNo0/autoclock/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/RoudgesNo0/autoclock?style=social)](https://github.com/RoudgesNo0/autoclock/network/members)
