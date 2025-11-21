@@ -245,6 +245,16 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Design Inspiration**: Modern web design principles
 - **Community**: Thanks to all contributors and users
 
+## 🚧 Mögliche Verbesserungen
+
+- **Barrierefreiheit erhöhen**: Mehr ARIA-Labels und Tastaturnavigation für alle interaktiven Elemente ergänzen, damit Screenreader-Nutzer:innen die Zeitcode-Eingaben leichter bedienen können.
+- **Validierung und Fehlermeldungen optimieren**: Clientseitige Checks auf ungültige Datums-/Zeiteingaben und eine präzisere Rückmeldung bei fehlerhaften Codes würden die Nutzerführung verbessern.
+- **Internationale Sprachunterstützung**: Eine Sprachumschaltung (z. B. EN/DE) mit lokalisierten Texten und Datumsformaten würde die globale Zielgruppe besser abholen.
+- **Offline- und PWA-Funktionen**: Einfache PWA-Integration mit Caching ermöglicht das Generieren/Decodieren von Codes auch ohne stabile Internetverbindung.
+- **Testing & Monitoring**: Automatisierte Unit-Tests für die Encode/Decode-Funktionen sowie ein kleiner Smoke-Test-Workflow (z. B. via GitHub Actions) sorgen für Stabilität bei Änderungen.
+- **UX für Freigabe-Links**: Ein kleiner “Link kopiert”-Toast und QR-Code-Generierung für geteilte Links erleichtern das Teilen auf Mobilgeräten.
+- **Performance & Robustheit**: Sanitizing der Eingaben und Graceful Fallbacks bei fehlender Clipboard-API oder Timezone-Detection vermeiden Brüche in älteren Browsern.
+
 ## 📞 Support
 
 - **Issues**: [GitHub Issues](https://github.com/RoudgesNo0/autoclock/issues)
